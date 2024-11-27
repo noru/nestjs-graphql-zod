@@ -5,7 +5,7 @@ import { MethodWithZod } from '../common'
 import type { AnyZodObject } from 'zod'
 import type { IModelFromZodOptions } from '../../model-from-zod'
 
-export interface QueryOptions<T extends AnyZodObject> extends QO {
+export type QueryOptions<T extends AnyZodObject> = QO<T> & {
   /**
    * Options for model creation from `zod`.
    *

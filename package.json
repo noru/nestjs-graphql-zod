@@ -30,17 +30,17 @@
   },
   "homepage": "https://github.com/incetarik/nestjs-graphql-zod#readme",
   "peerDependencies": {
-    "@nestjs/graphql": ">= 10.0",
-    "@nestjs/core": ">= 8.0",
-    "class-transformer": ">= 0.5.1",
     "@nestjs/common": ">= 8.0",
-    "rxjs": ">= 7.5.5",
-    "zod": ">= 3.15",
+    "@nestjs/core": ">= 8.0",
+    "@nestjs/graphql": ">= 10.0",
+    "class-transformer": ">= 0.5.1",
+    "graphql": ">= 16.3.0",
     "reflect-metadata": ">= 0.1.13",
-    "graphql": ">= 16.3.0"
+    "rxjs": ">= 7.5.5",
+    "zod": ">= 3.15"
   },
   "devDependencies": {
-    "typescript": "4.9.5",
-    "release-it": "*"
+    "release-it": "*",
+    "typescript": "5.7.2"
   }
 }

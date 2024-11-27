@@ -5,7 +5,7 @@ import { MethodWithZod } from '../common'
 import type { AnyZodObject } from 'zod'
 import type { IModelFromZodOptions } from '../../model-from-zod'
 
-export interface MutationOptions<T extends AnyZodObject> extends MO {
+export type MutationOptions<T extends AnyZodObject> = MO<T> & {
   /**
    * Options for model creation from `zod`.
    *

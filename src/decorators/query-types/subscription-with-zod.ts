@@ -7,7 +7,7 @@ import { IModelFromZodOptions, modelFromZod } from '../../model-from-zod'
 
 import type { AnyZodObject, ZodError } from 'zod'
 
-export interface SubscriptionOptions<T extends AnyZodObject> extends SO {
+export type SubscriptionOptions<T extends AnyZodObject> = SO<T> & {
   /**
    * Options for model creation from `zod`.
    *
