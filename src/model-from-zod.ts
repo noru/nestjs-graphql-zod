@@ -9,6 +9,8 @@ import { ObjectType, ObjectTypeOptions } from '@nestjs/graphql'
 import { extractNameAndDescription, parseShape } from './helpers'
 import { ZodObjectKey } from './helpers/constants'
 
+export type ZodInput = AnyZodObject | ZodArray<ZodInput>
+
 export interface IModelFromZodOptions<T extends ZodTypeAny>
   extends ObjectTypeOptions {
   /**
@@ -162,22 +164,7 @@ type Options<T extends ZodTypeAny>
 
 let _generatedClasses: WeakMap<ZodTypeAny, Type> | undefined
 
-export function modelFromZodBase<
-  T extends AnyZodObject,
-  O extends Options<T>
->(
-  zodInput: T,
-  options: O,
-  decorator: ClassDecorator
-):Type<TypeOf<T>>;
-export function modelFromZodBase<
-  T extends ZodArray<any>,
-  O extends Options<T>
->(
-  zodInput: T,
-  options: O,
-  decorator: ClassDecorator
-): Type<TypeOf<T>>;
+
 /**
  * Creates a dynamic class which will be compatible with GraphQL, from a
  * `zod` model.
@@ -190,7 +177,7 @@ export function modelFromZodBase<
  * compatible with `GraphQL`.
  */
 export function modelFromZodBase<
-  T extends AnyZodObject | ZodArray<any>,
+  T extends ZodInput,
   O extends Options<T>
 >(
   zodInput: T,
@@ -252,7 +239,7 @@ export function modelFromZodBase<
  * compatible with `GraphQL`.
  */
 export function modelFromZod<
-  T extends AnyZodObject,
+  T extends ZodInput,
   O extends IModelFromZodOptions<T>
   >(zodInput: T, options: O = {} as O): Type<TypeOf<T>> {
   const { name, description } = extractNameAndDescription(zodInput, options)

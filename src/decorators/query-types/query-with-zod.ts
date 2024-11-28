@@ -1,11 +1,8 @@
 import { Query, QueryOptions as QO } from '@nestjs/graphql'
-
 import { MethodWithZod } from '../common'
+import type { IModelFromZodOptions, ZodInput } from '../../model-from-zod'
 
-import type { AnyZodObject } from 'zod'
-import type { IModelFromZodOptions } from '../../model-from-zod'
-
-export type QueryOptions<T extends AnyZodObject> = QO<T> & {
+export type QueryOptions<T extends ZodInput> = QO<T> & {
   /**
    * Options for model creation from `zod`.
    *
@@ -26,7 +23,7 @@ export type QueryOptions<T extends AnyZodObject> = QO<T> & {
  * @param {T} input The zod input object.
  * @return {MethodDecorator} A {@link MethodDecorator}.
  */
-export function QueryWithZod<T extends AnyZodObject>(input: T): MethodDecorator
+export function QueryWithZod<T extends ZodInput>(input: T): MethodDecorator
 
 /**
  * Query handler (method) Decorator.
@@ -40,7 +37,7 @@ export function QueryWithZod<T extends AnyZodObject>(input: T): MethodDecorator
  * @param {string} name The name of the method.
  * @return {MethodDecorator} A {@link MethodDecorator}.
  */
-export function QueryWithZod<T extends AnyZodObject>(input: T, name: string): MethodDecorator
+export function QueryWithZod<T extends ZodInput>(input: T, name: string): MethodDecorator
 
 /**
  * Query handler (method) Decorator.
@@ -54,8 +51,8 @@ export function QueryWithZod<T extends AnyZodObject>(input: T, name: string): Me
  * @param {QueryOptions<T>} options The options for query.
  * @return {MethodDecorator} A {@link MethodDecorator}.
  */
-export function QueryWithZod<T extends AnyZodObject>(input: T, options: QueryOptions<T>): MethodDecorator
+export function QueryWithZod<T extends ZodInput>(input: T, options: QueryOptions<T>): MethodDecorator
 
-export function QueryWithZod<T extends AnyZodObject>(input: T, nameOrOptions?: string | QueryOptions<T>) {
+export function QueryWithZod<T extends ZodInput>(input: T, nameOrOptions?: string | QueryOptions<T>) {
   return MethodWithZod(input, nameOrOptions, Query)
 }

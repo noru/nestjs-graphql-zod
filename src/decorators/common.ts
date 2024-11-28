@@ -2,15 +2,12 @@ import type { DynamicZodModelClass, GraphQLMDF } from './types'
 import type { WrapWithZodOptions } from './zod-options-wrapper.interface'
 import type { TypeProvider } from '../types/type-provider'
 import type { EnumProvider } from '../types/enum-provider'
-
-import type { AnyZodObject } from 'zod'
 import type { BaseTypeOptions } from '@nestjs/graphql'
-
-import { IModelFromZodOptions, modelFromZod } from '../model-from-zod'
+import { IModelFromZodOptions, modelFromZod, ZodInput } from '../model-from-zod'
 import { decorateWithZodInput } from './decorate-with-zod-input'
 import { makeDecoratorFromFactory } from './make-decorator-from-factory'
 
-type BaseOptions<T extends AnyZodObject> = WrapWithZodOptions<BaseTypeOptions, T>
+type BaseOptions<T extends ZodInput> = WrapWithZodOptions<BaseTypeOptions, T>
 
 let DEFAULT_TYPE_PROVIDER: TypeProvider | undefined
 let DEFAULT_ENUM_PROVIDER: EnumProvider | undefined
@@ -32,7 +29,7 @@ let DEFAULT_ENUM_PROVIDER: EnumProvider | undefined
  *
  * @return {MethodDecorator} A method decorator.
  */
-export function MethodWithZodModel<T extends AnyZodObject>(
+export function MethodWithZodModel<T extends ZodInput>(
   input: T,
   nameOrOptions: string | BaseOptions<T> | undefined,
   graphqlDecoratorFactory: GraphQLMDF<BaseTypeOptions>,
@@ -89,7 +86,7 @@ export function MethodWithZodModel<T extends AnyZodObject>(
  *
  * @return {MethodDecorator} A method decorator.
  */
-export function MethodWithZod<T extends AnyZodObject>(
+export function MethodWithZod<T extends ZodInput>(
   input: T,
   nameOrOptions: string | BaseOptions<T> | undefined,
   graphqlDecoratorFactory: GraphQLMDF<BaseTypeOptions>

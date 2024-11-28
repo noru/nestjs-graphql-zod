@@ -3,11 +3,11 @@ import { plainToInstance } from 'class-transformer'
 import { BadRequestException } from '@nestjs/common'
 import { Subscription, SubscriptionOptions as SO } from '@nestjs/graphql'
 
-import { IModelFromZodOptions, modelFromZod } from '../../model-from-zod'
+import { IModelFromZodOptions, modelFromZod, ZodInput } from '../../model-from-zod'
 
-import type { AnyZodObject, ZodError } from 'zod'
+import type { ZodError } from 'zod'
 
-export type SubscriptionOptions<T extends AnyZodObject> = SO<T> & {
+export type SubscriptionOptions<T extends ZodInput> = SO<T> & {
   /**
    * Options for model creation from `zod`.
    *
@@ -28,7 +28,7 @@ export type SubscriptionOptions<T extends AnyZodObject> = SO<T> & {
  * @param {T} input The zod input object.
  * @return {MethodDecorator} A {@link MethodDecorator}.
  */
-export function SubscriptionWithZod<T extends AnyZodObject>(input: T): MethodDecorator
+export function SubscriptionWithZod<T extends ZodInput>(input: T): MethodDecorator
 
 /**
  * Subscription handler (method) Decorator.
@@ -42,7 +42,7 @@ export function SubscriptionWithZod<T extends AnyZodObject>(input: T): MethodDec
  * @param {string} name The name of the method.
  * @return {MethodDecorator} A {@link MethodDecorator}.
  */
-export function SubscriptionWithZod<T extends AnyZodObject>(input: T, name: string): MethodDecorator
+export function SubscriptionWithZod<T extends ZodInput>(input: T, name: string): MethodDecorator
 
 /**
  * Subscription handler (method) Decorator.
@@ -58,7 +58,7 @@ export function SubscriptionWithZod<T extends AnyZodObject>(input: T, name: stri
  *
  * @return {MethodDecorator} A {@link MethodDecorator}.
  */
-export function SubscriptionWithZod<T extends AnyZodObject>(input: T, options: SubscriptionOptions<T>): MethodDecorator
+export function SubscriptionWithZod<T extends ZodInput>(input: T, options: SubscriptionOptions<T>): MethodDecorator
 
 /**
  * Subscription handler (method) Decorator.
@@ -75,13 +75,13 @@ export function SubscriptionWithZod<T extends AnyZodObject>(input: T, options: S
  *
  * @return {MethodDecorator} A {@link MethodDecorator}.
  */
-export function SubscriptionWithZod<T extends AnyZodObject>(
+export function SubscriptionWithZod<T extends ZodInput>(
   input: T,
   name: string,
   options: Pick<SubscriptionOptions<T>, 'filter' | 'resolve' | 'zod'>
 ): MethodDecorator
 
-export function SubscriptionWithZod<T extends AnyZodObject>(
+export function SubscriptionWithZod<T extends ZodInput>(
   input: T,
   nameOrOptions?: string | SubscriptionOptions<T>,
   pickedOptions?: Pick<SubscriptionOptions<T>, 'filter' | 'resolve' | 'zod'>

@@ -1,8 +1,9 @@
 import type { BaseOptions } from './zod-options-wrapper.interface'
 import type { DynamicZodModelClass } from './types'
 import { plainToInstance } from 'class-transformer'
-import { AnyZodObject, ZodArray, ZodError } from 'zod'
+import { ZodArray, ZodError } from 'zod'
 import { BadRequestException } from '@nestjs/common'
+import { ZodInput } from 'src/model-from-zod'
 
 type Fn = (...args: any) => any
 
@@ -22,7 +23,7 @@ type Fn = (...args: any) => any
  * @return {F}
  */
 export function decorateWithZodInput<
-  T extends AnyZodObject,
+  T extends ZodInput,
   F extends Fn = Fn
 >(
   originalFunction: F,
@@ -34,7 +35,7 @@ export function decorateWithZodInput<
 
     function _plainToInstance(input: T, model: any, data: any) {
       if (input instanceof ZodArray) {
-        return data.map((item: any) => _plainToInstance(input.element, model[0], item))
+        return data.map((item: any) => _plainToInstance((input as ZodArray<any>).element, model[0], item))
       } else {
         return plainToInstance(model, data)
       }

@@ -1,11 +1,8 @@
 import { Mutation, MutationOptions as MO } from '@nestjs/graphql'
-
 import { MethodWithZod } from '../common'
+import type { IModelFromZodOptions, ZodInput } from '../../model-from-zod'
 
-import type { AnyZodObject } from 'zod'
-import type { IModelFromZodOptions } from '../../model-from-zod'
-
-export type MutationOptions<T extends AnyZodObject> = MO<T> & {
+export type MutationOptions<T extends ZodInput> = MO<T> & {
   /**
    * Options for model creation from `zod`.
    *
@@ -26,7 +23,7 @@ export type MutationOptions<T extends AnyZodObject> = MO<T> & {
  * @param {T} input The zod input object.
  * @return {MethodDecorator} A {@link MethodDecorator}.
  */
-export function MutationWithZod<T extends AnyZodObject>(input: T): MethodDecorator
+export function MutationWithZod<T extends ZodInput>(input: T): MethodDecorator
 
 /**
  * Mutation handler (method) Decorator.
@@ -40,7 +37,7 @@ export function MutationWithZod<T extends AnyZodObject>(input: T): MethodDecorat
  * @param {string} name The name of the method.
  * @return {MethodDecorator} A {@link MethodDecorator}.
  */
-export function MutationWithZod<T extends AnyZodObject>(input: T, name: string): MethodDecorator
+export function MutationWithZod<T extends ZodInput>(input: T, name: string): MethodDecorator
 
 /**
  * Mutation handler (method) Decorator.
@@ -54,8 +51,8 @@ export function MutationWithZod<T extends AnyZodObject>(input: T, name: string):
  * @param {MutationOptions<T>} options The options for query method.
  * @return {MethodDecorator} A {@link MethodDecorator}.
  */
-export function MutationWithZod<T extends AnyZodObject>(input: T, options: MutationOptions<T>): MethodDecorator
+export function MutationWithZod<T extends ZodInput>(input: T, options: MutationOptions<T>): MethodDecorator
 
-export function MutationWithZod<T extends AnyZodObject>(input: T, nameOrOptions?: string | MutationOptions<T>) {
+export function MutationWithZod<T extends ZodInput>(input: T, nameOrOptions?: string | MutationOptions<T>) {
   return MethodWithZod(input, nameOrOptions, Mutation)
 }
