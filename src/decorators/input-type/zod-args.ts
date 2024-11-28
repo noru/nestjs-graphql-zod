@@ -312,7 +312,7 @@ function prepareDecorator(property?: string, options?: DecoratorOptions, ...pipe
   return args
 }
 
-export module ZodArgs {
+export namespace ZodArgs {
   /**
    * A type for inferring the type of a given `zod` validation object.
    */

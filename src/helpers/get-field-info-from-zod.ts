@@ -298,7 +298,7 @@ export function getFieldInfoFromZod<T extends ZodTypeAny>(
   }
 }
 
-export module getFieldInfoFromZod {
+export namespace getFieldInfoFromZod {
   /**
    * The types that are parseable by the {@link getFieldInfoFromZod} function.
    */
