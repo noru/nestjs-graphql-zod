@@ -26,10 +26,10 @@ export function createZodPropertyDescriptor<T extends ZodType>(
   input: ZodTypeAny,
   opts: IModelFromZodOptions<T>
 ): PropertyDescriptor {
-  let localVariable: any
+  let defaultValue: any
 
   if (isZodInstance(ZodDefault, input)) {
-    localVariable = input._def.defaultValue()
+    defaultValue = input._def.defaultValue()
   }
 
   const {
@@ -42,36 +42,37 @@ export function createZodPropertyDescriptor<T extends ZodType>(
 
   let keyProps: Partial<ParseParams> | undefined
   if (typeof onParsing === 'function') {
-    keyProps = onParsing(key, localVariable)
+    keyProps = onParsing(key, defaultValue)
   }
 
   return {
     get() {
-      return localVariable
+      return this._values?.[key] ?? defaultValue
     },
-    set(newValue) {
+    set(newValue: any) {
+      this._values ??= {}
       if (safe) {
         const result = input.safeParse(newValue, keyProps)
         if (result.success) {
-          localVariable = result.data
+          this._values[key] = result.data
         }
         else {
-          let replaceValue: typeof localVariable
+          let replaceValue: typeof defaultValue
 
           if (typeof onParseError === 'function') {
             replaceValue = onParseError(
               key,
               newValue,
-              localVariable,
+              defaultValue,
               result.error
             )
           }
 
           if (typeof replaceValue !== 'undefined') {
-            localVariable = replaceValue
+            this._values[key] = replaceValue
           }
           else if (doNotThrow) {
-            localVariable = undefined
+            this._values[key] = undefined
           }
           else {
             throw result.error
@@ -82,17 +83,17 @@ export function createZodPropertyDescriptor<T extends ZodType>(
         if (doNotThrow) {
           try {
             const result = input.parse(newValue, keyProps)
-            localVariable = result
+            this._values[key] = result
           }
           catch (_) {
-            localVariable = undefined
+            this._values[key] = undefined
           }
         }
         else {
           const result = input.parse(newValue, keyProps)
-          localVariable = result
+          this._values[key] = result
         }
       }
     }
-  }
+  } as any as PropertyDescriptor
 }
