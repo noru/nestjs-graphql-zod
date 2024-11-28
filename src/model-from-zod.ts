@@ -2,7 +2,7 @@ import type { Type } from '@nestjs/common'
 import type { EnumProvider } from './types/enum-provider'
 import type { TypeProvider } from './types/type-provider'
 
-import type { AnyZodObject, ParseParams, TypeOf, ZodError, ZodTypeAny } from 'zod'
+import { AnyZodObject, ParseParams, TypeOf, ZodArray, ZodError, ZodTypeAny } from 'zod'
 
 import { ObjectType, ObjectTypeOptions } from '@nestjs/graphql'
 
@@ -162,6 +162,22 @@ type Options<T extends ZodTypeAny>
 
 let _generatedClasses: WeakMap<ZodTypeAny, Type> | undefined
 
+export function modelFromZodBase<
+  T extends AnyZodObject,
+  O extends Options<T>
+>(
+  zodInput: T,
+  options: O,
+  decorator: ClassDecorator
+):Type<TypeOf<T>>;
+export function modelFromZodBase<
+  T extends ZodArray<any>,
+  O extends Options<T>
+>(
+  zodInput: T,
+  options: O,
+  decorator: ClassDecorator
+): Type<TypeOf<T>>;
 /**
  * Creates a dynamic class which will be compatible with GraphQL, from a
  * `zod` model.
@@ -174,13 +190,18 @@ let _generatedClasses: WeakMap<ZodTypeAny, Type> | undefined
  * compatible with `GraphQL`.
  */
 export function modelFromZodBase<
-  T extends AnyZodObject,
+  T extends AnyZodObject | ZodArray<any>,
   O extends Options<T>
 >(
   zodInput: T,
   options: O = {} as O,
   decorator: ClassDecorator
 ): Type<TypeOf<T>> {
+
+  if (zodInput instanceof ZodArray) {
+    return [modelFromZodBase((zodInput as any)._def.type, options, decorator)] as any
+  }
+
   const previousRecord
     = (_generatedClasses ??= new WeakMap<ZodTypeAny, Type>())
       .get(zodInput)
