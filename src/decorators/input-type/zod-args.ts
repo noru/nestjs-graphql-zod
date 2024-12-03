@@ -12,6 +12,7 @@ import { EnumProvider } from '../../types/enum-provider'
 import { TypeProvider } from '../../types/type-provider'
 import { getDefaultTypeProvider } from '../common'
 import { inputFromZod } from './input-from-zod'
+import cache from '../../cache'
 
 type PT<F = any, T = any> = PipeTransform<F, T> | Type<PipeTransform<F, T>>
 
@@ -60,7 +61,6 @@ type CustomDecoratorOptions = {
 
 type DecoratorOptions = ArgsOptions & CustomDecoratorOptions
 
-let GENERATED_TYPES: WeakMap<ZodTypeAny, object> | undefined
 let USED_NAMES: string[] | undefined
 
 /**
@@ -75,8 +75,7 @@ function _getOrCreateRegisteredType<T extends AnyZodObject>(
   input: T,
   options: CustomDecoratorOptions
 ) {
-  if (!GENERATED_TYPES) { GENERATED_TYPES = new WeakMap() }
-  let RegisteredType = GENERATED_TYPES.get(input) as Type<Infer<T>> | undefined
+  let RegisteredType = cache.input.get(input) as Type<Infer<T>> | undefined
   if (RegisteredType) return RegisteredType
 
   const { name, description } = extractNameAndDescription(input, {})
@@ -93,7 +92,7 @@ function _getOrCreateRegisteredType<T extends AnyZodObject>(
     }
   })
 
-  GENERATED_TYPES.set(input, RegisteredType)
+  cache.input.set(input, RegisteredType)
   return RegisteredType
 }
 
@@ -246,6 +245,8 @@ export function ZodArgs<T extends ZodTypeAny>(
   }
 
   options ??= {}
+  // @ts-ignore
+  options.inputType = true
   const { getScalarTypeFor = getDefaultTypeProvider() } = options
 
   if (!isZodInstance(ZodObject, input)) {
@@ -263,7 +264,7 @@ export function ZodArgs<T extends ZodTypeAny>(
     const RegisteredType = _getOrCreateRegisteredType(
       input as AnyZodObject,
       {
-        getScalarTypeFor
+        getScalarTypeFor,
       }
     )
 
@@ -331,6 +332,5 @@ export namespace ZodArgs {
    */
   export function free() {
     USED_NAMES = undefined
-    GENERATED_TYPES = undefined
   }
 }

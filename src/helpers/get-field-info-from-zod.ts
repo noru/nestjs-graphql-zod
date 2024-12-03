@@ -15,7 +15,7 @@ import {
   ZodTypeAny,
 } from 'zod'
 
-import { Int } from '@nestjs/graphql'
+import { InputType, Int } from '@nestjs/graphql'
 
 import { getDefaultTypeProvider } from '../decorators/common'
 import {
@@ -236,6 +236,13 @@ export function getFieldInfoFromZod<T extends ZodTypeAny>(
         prop as any,
         nestedOptions,
         options.getDecorator(prop as any as T, nestedOptions.name)
+      )
+    }
+    else if (options.inputType) {
+      model = modelFromZodBase(
+        prop as any,
+        nestedOptions,
+        InputType(name, { description: prop.description }),
       )
     }
     else {

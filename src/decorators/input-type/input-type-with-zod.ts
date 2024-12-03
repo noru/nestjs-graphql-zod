@@ -59,7 +59,6 @@ export function InputTypeWithZod<T extends AnyZodObject>(
   if (!nameOrOptions) {
     nameOrOptions = options?.name
   }
-
   const name = nameOrOptions
   let zodOptions = options?.zod
 
@@ -74,7 +73,6 @@ export function InputTypeWithZod<T extends AnyZodObject>(
 
   return function ZodClassDecoratorBase(target: Function) {
     zodOptions ??= {}
-
     const { prototype } = target
     const { description, name = target.name } = extractNameAndDescription(input, zodOptions)
     const { keepZodObject = false } = zodOptions
@@ -100,6 +98,7 @@ export function InputTypeWithZod<T extends AnyZodObject>(
         return buildInputTypeDecorator(key, inputTypeOptions)
       },
       getScalarTypeFor: zodOptions.getScalarTypeFor,
+      inputType: true,
     })
 
     for (const { descriptor, key, decorateFieldProperty } of parsed) {

@@ -8,6 +8,7 @@ import { ObjectType, ObjectTypeOptions } from '@nestjs/graphql'
 
 import { extractNameAndDescription, parseShape } from './helpers'
 import { ZodObjectKey } from './helpers/constants'
+import cache from './cache'
 
 export type ZodInput = AnyZodObject | ZodArray<ZodInput>
 
@@ -146,6 +147,8 @@ export interface IModelFromZodOptions<T extends ZodTypeAny>
    * @memberof IModelFromZodOptions
    */
   getEnumType?: EnumProvider
+
+  inputType?: Boolean // separate input and output types
 }
 
 type Options<T extends ZodTypeAny>
@@ -161,8 +164,6 @@ type Options<T extends ZodTypeAny>
      */
     getDecorator?(zodInput: T, key: string): ClassDecorator
   }
-
-let _generatedClasses: WeakMap<ZodTypeAny, Type> | undefined
 
 
 /**
@@ -182,18 +183,16 @@ export function modelFromZodBase<
 >(
   zodInput: T,
   options: O = {} as O,
-  decorator: ClassDecorator
+  decorator: ClassDecorator,
 ): Type<TypeOf<T>> {
 
   if (zodInput instanceof ZodArray) {
     return [modelFromZodBase((zodInput as any)._def.type, options, decorator)] as any
   }
 
-  const previousRecord
-    = (_generatedClasses ??= new WeakMap<ZodTypeAny, Type>())
-      .get(zodInput)
-
-  if (previousRecord) return previousRecord
+  let _cache = options.inputType ? cache.input : cache.output
+  // @ts-ignore
+  if (_cache.has(zodInput)) return _cache.get(zodInput)!
 
   const { name, description } = extractNameAndDescription(zodInput, options)
   let { keepZodObject = false } = options
@@ -223,7 +222,7 @@ export function modelFromZodBase<
     decorateFieldProperty(prototype, key as string)
   }
 
-  _generatedClasses.set(zodInput, DynamicZodModel)
+  _cache.set(zodInput, DynamicZodModel)
   return DynamicZodModel as Type<TypeOf<T>>
 }
 
